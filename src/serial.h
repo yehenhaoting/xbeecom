@@ -58,6 +58,8 @@ extern "C" {
 #define PARITY_MARK  'M'
 
 
+extern int openSerial;
+
 /**
  * open serial port
  *

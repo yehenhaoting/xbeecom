@@ -5,7 +5,7 @@
 #include "sys/time.h"
 #include <math.h>
 #include <stdio.h>
-#include "ftditools.h"
+//#include "ftditools.h"
 #include "serial.h"
 
 double inittime=0;
