@@ -1,34 +1,32 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include <geometry_msgs/PoseStamped.h> 
-#include "geometry_msgs/Vector3.h"
+#include <mavros_msgs/AttitudeTarget.h>
 #include <sstream>
 #include "sys/time.h"
 #include <math.h>
 #include <stdio.h>
 #include "serial.h"
 
-geometry_msgs::Vector3 posref;
 int initsecs;
 int fd;
 
-void poseHandler(geometry_msgs::PoseStamped msg)
+void attitudeHandler(mavros_msgs::AttitudeTarget msg)
 {
     short data[14];
     int secs[2];
-    data[0]=(short)(msg.pose.position.x*1000);
-    data[1]=(short)(msg.pose.position.y*1000);
-    data[2]=(short)(msg.pose.position.z*1000);
-    data[3]=(short)(msg.pose.orientation.x*10000);
-    data[4]=(short)(msg.pose.orientation.y*10000);
-    data[5]=(short)(msg.pose.orientation.z*10000);
-    data[6]=(short)(msg.pose.orientation.w*10000);
-    data[7]=(short)(posref.x*1000);
-    data[8]=(short)(posref.y*1000);
-    data[9]=(short)(posref.z*1000);
+    data[0]=(short)(msg.body_rate.x*10000);
+    data[1]=(short)(msg.body_rate.y*10000);
+    data[2]=(short)(msg.body_rate.z*10000;
+    data[3]=(short)(msg.thrust*10000);
+    data[4]=(short)(-1*10000);
+    data[5]=(short)(-1*10000);
+    data[6]=(short)(-1*10000);
+    data[7]=(short)(-1*10000);
+    data[8]=(short)(-1*10000);
+    data[9]=(short)(-1*10000);
     secs[0]=msg.header.stamp.sec;
     secs[1]=msg.header.stamp.nsec;
-    std::cout<<secs[0]<<":"<<secs[1]<<":"<<msg.pose.position.x<<":"<<msg.pose.position.y<<":"<<msg.pose.position.z<<":"<<msg.pose.orientation.x<<":"<<msg.pose.orientation.y<<":"<<msg.pose.orientation.z<<":"<<msg.pose.orientation.w<<std::endl;
+    std::cout<<secs[0]<<":"<<secs[1]<<":"<<msg.body_rate.x<<":"<<msg.body_rate.y<<":"<<msg.body_rate.z<<":"<<msg.thrust<<std::endl;
     memcpy(&data[10],secs,sizeof(secs));
 
     if(fd<1)
@@ -38,27 +36,14 @@ void poseHandler(geometry_msgs::PoseStamped msg)
     sendmessage(fd,data);
 }
 
-void poserefHandler(geometry_msgs::Vector3 msg)
-{
-	posref.x=msg.x;
-	posref.y=msg.y;
-	posref.z=msg.z;
-	//std::cout<<"--"<<msg.y<<std::endl;
-}
-
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "xbee_sender");
 	ros::NodeHandle n;
     fd = serial_open_file("/dev/ttyUSB0", 57600);
     ROS_INFO("Open Serial: [%d]", fd);
 
-	posref.x=0;
-    posref.y=0;
-    posref.z=-1;
-
 	initsecs = (int)(ros::Time::now().toSec());
-	ros::Subscriber sub = n.subscribe("/mocap/pose", 10, poseHandler);
-	ros::Subscriber subref = n.subscribe("/cmd/posref", 10, poserefHandler);
+	ros::Subscriber sub = n.subscribe("/cmd/attitudeTarget", 10, attitudeHandler);
 	ros::spin();
 	return 0;
 }

@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "serial.h"
+#include <std_msgs/Float32.h>
 
 double inittime=0;
 
@@ -22,67 +23,53 @@ double getTime()
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "xbee_receiver");
 	ros::NodeHandle n;
-	ros::Publisher pub = n.advertise<geometry_msgs::PoseStamped>("/mavros/mocap/pose", 10);
-	ros::Publisher pubref = n.advertise<geometry_msgs::PoseStamped>("/mavros/setpoint_position/local", 10);
-	ros::Rate loop_rate(30);
+	ros::Publisher roll_pub = n.advertise<std_msgs::Float32>("/cmd/roll", 10);
+	ros::Publisher pitch_pub = n.advertise<std_msgs::Float32>("/cmd/pitch", 10);
+	ros::Publisher yaw_pub = n.advertise<std_msgs::Float32>("/cmd/yaw", 10);
+	ros::Publisher thrust_pub = n.advertise<std_msgs::Float32>("/cmd/thrust", 10);
+
+	ros::Rate loop_rate(20);
 	short data_out[14];
 	int secs[2];
 	int fd;
-	int data_new_flag=0;
-	geometry_msgs::PoseStamped msg;
-	geometry_msgs::PoseStamped msgref;
-	double ltime,ntime;
-	ltime=getTime();
-	ntime=ltime;
-	/*
-	msg.layout.dim[0].size=2;
-	msg.layout.dim[0].stride=2;
-	msg.layout.dim[0].label="Time";
-	msg.layout.dim[1].size=1;
-	msg.layout.dim[2].size=1;
-	*/
+
+	std_msgs::Float32 roll_receive, pitch_receive, yaw_receive, thrust_receive;
+//	double ltime,ntime;
+//	ltime=getTime();
+//	ntime=ltime;
+
 	fd = serial_open_file("/dev/ttyUSB0", 57600);
 	ROS_INFO("Open Serial %d", fd);
-	//openFtdi = open_ftdi(57600, "Aero0", 5, 15);
-	//ROS_INFO("Open Ftdi: [%d]", openFtdi);
+
 	while (ros::ok()) {
-		ntime=getTime();
-		ltime=ntime;
+//		ntime=getTime();
+//		ltime=ntime;
 
 		if(readmessage (fd, data_out)<1)
 		{
 			loop_rate.sleep();
 		}
 		memcpy(secs,&data_out[10],sizeof(secs));
-		msg.pose.position.x=data_out[0]/1000.0f;
-		msg.pose.position.y=data_out[1]/1000.0f;
-		msg.pose.position.z=data_out[2]/1000.0f;
-		msg.pose.orientation.x=data_out[3]/1000.0f;
-		msg.pose.orientation.y=data_out[4]/1000.0f;
-		msg.pose.orientation.z=data_out[5]/1000.0f;
-		msg.pose.orientation.w=data_out[6]/1000.0f;
-		if(inittime<1){
-			inittime=ros::Time::now().toSec()-secs[0]-secs[1]/1000000000.0f;
-		}
-		double t=(inittime+secs[0]+secs[1]/1000000000.0f);
-		msg.header.stamp.sec=(int)t;
-		msg.header.stamp.nsec=(int)((t-msg.header.stamp.sec)*1000000000);//secs[1];
-		pub.publish(msg);
-		msgref.pose.position.x=data_out[7]/1000.0f;
-		msgref.pose.position.y=data_out[8]/1000.0f;
-		msgref.pose.position.z=data_out[9]/1000.0f;
-		std::cout<<data_out[0]<<"-"<<data_out[8]<<std::endl;
-		if(msgref.pose.position.z<-5)
-		{
-			msgref.pose.position.x=msg.pose.position.x;
-			msgref.pose.position.y=msg.pose.position.y;
-			msgref.pose.position.z=msg.pose.position.z-5;
-		}
-		if(msgref.pose.position.z>2)
-		{
-			msgref.pose.position.z=2;
-		}
-		pubref.publish(msgref);
+
+		roll_receive.data   = (float)data_out[0]/31416.0f *180;
+		pitch_receive.data  = (float)data_out[1]/31416.0f *180;
+		yaw_receive.data    = (float)data_out[2]/31416.0f *180;
+		thrust_receive.data = (float)data_out[3]/31416.0f *180;
+
+		roll_pub.publish(roll_receive);
+		pitch_pub.publish(pitch_receive);
+		yaw_pub.publish(yaw_receive);
+		thrust_pub.publish(thrust_receive);
+
+//		if(inittime<1){
+//			inittime=ros::Time::now().toSec()-secs[0]-secs[1]/1000000000.0f;
+//		}
+//		double t=(inittime+secs[0]+secs[1]/1000000000.0f);
+//		msg.header.stamp.sec=(int)t;
+//		msg.header.stamp.nsec=(int)((t-msg.header.stamp.sec)*1000000000);//secs[1];
+//		pub.publish(msg);
+
+		std::cout<<roll_receive<<"-"<<pitch_receive<<"-"<<yaw_receive<<"----"<<thrust_receive<<std::endl;
 
 		ros::spinOnce();
 		loop_rate.sleep();
