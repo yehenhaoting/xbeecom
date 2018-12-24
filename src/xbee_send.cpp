@@ -10,6 +10,7 @@
 
 geometry_msgs::Vector3 posref;
 int initsecs;
+int fd;
 
 void poseHandler(geometry_msgs::PoseStamped msg)
 {
@@ -30,11 +31,11 @@ void poseHandler(geometry_msgs::PoseStamped msg)
     std::cout<<secs[0]<<":"<<secs[1]<<":"<<msg.pose.position.x<<":"<<msg.pose.position.y<<":"<<msg.pose.position.z<<":"<<msg.pose.orientation.x<<":"<<msg.pose.orientation.y<<":"<<msg.pose.orientation.z<<":"<<msg.pose.orientation.w<<std::endl;
     memcpy(&data[10],secs,sizeof(secs));
 
-    if(openSerial<1)
+    if(fd<1)
     {
-        openSerial = serial_open_file("/dev/ttyUSB0", 57600);
+        fd = serial_open_file("/dev/ttyUSB0", 57600);
     }
-    sendmessage(openSerial,data);
+    sendmessage(fd,data);
 }
 
 void poserefHandler(geometry_msgs::Vector3 msg)
@@ -48,8 +49,8 @@ void poserefHandler(geometry_msgs::Vector3 msg)
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "xbee_sender");
 	ros::NodeHandle n;
-    openSerial = serial_open_file("/dev/ttyUSB0", 57600);
-    ROS_INFO("Open Serial: [%d]", openSerial);
+    fd = serial_open_file("/dev/ttyUSB0", 57600);
+    ROS_INFO("Open Serial: [%d]", fd);
 
 	posref.x=0;
     posref.y=0;
