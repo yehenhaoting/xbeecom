@@ -5,7 +5,6 @@
 #include "sys/time.h"
 #include <math.h>
 #include <stdio.h>
-//#include "ftditools.h"
 #include "serial.h"
 
 double inittime=0;
@@ -49,22 +48,9 @@ int main(int argc, char **argv) {
 	while (ros::ok()) {
 		ntime=getTime();
 		ltime=ntime;
-		//msg.data[1]=getTime();
-		//ROS_INFO("Show Data: [%s]", msg->data.c_str());
-/*
-		
-		for(int i=0;i<8;i++)
-		{
-			msg.data[i]=data_out[i]/512.0f;
-		}
-		if(openFtdi<1)
-		{
-			openFtdi = open_ftdi(57600, "Aero0", 5, 15);
-		}*/
-		//data_new_flag = read_ftdi (data_out);
+
 		if(readmessage (fd, data_out)<1)
 		{
-			//ros::spinOnce();
 			loop_rate.sleep();
 		}
 		memcpy(secs,&data_out[10],sizeof(secs));

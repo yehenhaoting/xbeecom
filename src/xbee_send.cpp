@@ -6,12 +6,10 @@
 #include "sys/time.h"
 #include <math.h>
 #include <stdio.h>
-//#include "ftditools.h"
 #include "serial.h"
 
 geometry_msgs::Vector3 posref;
 int initsecs;
-
 
 void poseHandler(geometry_msgs::PoseStamped msg)
 {
@@ -31,11 +29,7 @@ void poseHandler(geometry_msgs::PoseStamped msg)
     secs[1]=msg.header.stamp.nsec;
     std::cout<<secs[0]<<":"<<secs[1]<<":"<<msg.pose.position.x<<":"<<msg.pose.position.y<<":"<<msg.pose.position.z<<":"<<msg.pose.orientation.x<<":"<<msg.pose.orientation.y<<":"<<msg.pose.orientation.z<<":"<<msg.pose.orientation.w<<std::endl;
     memcpy(&data[10],secs,sizeof(secs));
-//	if(openFtdi<1)
-//	{
-//		openFtdi = open_ftdi(57600, "Aero0_Ground", 5, 15);
-//	}
-//	send_ftdi(data);
+
     if(openSerial<1)
     {
         openSerial = serial_open_file("/dev/ttyUSB0", 57600);
@@ -54,12 +48,12 @@ void poserefHandler(geometry_msgs::Vector3 msg)
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "xbee_sender");
 	ros::NodeHandle n;
-//	openFtdi = open_ftdi(57600, "Aero0_Ground", 5, 15);
     openSerial = serial_open_file("/dev/ttyUSB0", 57600);
     ROS_INFO("Open Serial: [%d]", openSerial);
-	posref.z=-1;
-	posref.y=0;
+
 	posref.x=0;
+    posref.y=0;
+    posref.z=-1;
 
 	initsecs = (int)(ros::Time::now().toSec());
 	ros::Subscriber sub = n.subscribe("/mocap/pose", 10, poseHandler);
