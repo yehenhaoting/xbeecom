@@ -164,7 +164,7 @@ include_directories(
         ${catkin_INCLUDE_DIRS}
         src/)
 
-add_library(thelib
+add_library(seriallib
 #        src/ftd2xx.h
 #        src/ftditools.h
 #        src/ftditools.cpp
@@ -176,9 +176,9 @@ add_library(thelib
 #add_dependencies(xbee_com xbee_com_cpp)
 
 add_executable(xbee_receive src/serial.c src/xbee_receive.cpp)
-target_link_libraries(xbee_receive ${catkin_LIBRARIES} thelib)
+target_link_libraries(xbee_receive ${catkin_LIBRARIES} seriallib)
 #add_dependencies(xbee_receive xbee_receive_cpp)
 
 add_executable(xbee_send src/serial.c src/xbee_send.cpp)
-target_link_libraries(xbee_send ${catkin_LIBRARIES} thelib)
+target_link_libraries(xbee_send ${catkin_LIBRARIES} seriallib)
 #add_dependencies(xbee_send xbee_send_cpp)
