@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 		roll_receive.data   = (float)data_out[0]/31416.0f *180;
 		pitch_receive.data  = (float)data_out[1]/31416.0f *180;
 		yaw_receive.data    = (float)data_out[2]/31416.0f *180;
-		thrust_receive.data = (float)data_out[3]/31416.0f *180;
+		thrust_receive.data = (float)data_out[3]/100.0f;
 
 		roll_pub.publish(roll_receive);
 		pitch_pub.publish(pitch_receive);
