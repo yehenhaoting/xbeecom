@@ -7,6 +7,7 @@ project(xbee_com)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  mavros
   std_msgs
 )
 

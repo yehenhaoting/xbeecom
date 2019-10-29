@@ -16,7 +16,7 @@ void attitudeHandler(mavros_msgs::AttitudeTarget msg)
     int secs[2];
     data[0]=(short)(msg.body_rate.x*10000);
     data[1]=(short)(msg.body_rate.y*10000);
-    data[2]=(short)(msg.body_rate.z*10000;
+    data[2]=(short)(msg.body_rate.z*10000);
     data[3]=(short)(msg.thrust*10000);
     data[4]=(short)(-1*10000);
     data[5]=(short)(-1*10000);
@@ -31,7 +31,7 @@ void attitudeHandler(mavros_msgs::AttitudeTarget msg)
 
     if(fd<1)
     {
-        fd = serial_open_file("/dev/ttyUSB0", 57600);
+        fd = serial_open_file((char*)"/dev/ttyUSB0", 57600);
     }
     sendmessage(fd,data);
 }
@@ -39,7 +39,7 @@ void attitudeHandler(mavros_msgs::AttitudeTarget msg)
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "xbee_sender");
 	ros::NodeHandle n;
-    fd = serial_open_file("/dev/ttyUSB0", 57600);
+    fd = serial_open_file((char*)"/dev/ttyUSB0", 57600);
     ROS_INFO("Open Serial: [%d]", fd);
 
 	initsecs = (int)(ros::Time::now().toSec());
