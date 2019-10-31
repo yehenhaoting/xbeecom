@@ -173,3 +173,9 @@ target_link_libraries(xbee_receive ${catkin_LIBRARIES} seriallib)
 
 add_executable(xbee_send src/serial.c src/xbee_send.cpp)
 target_link_libraries(xbee_send ${catkin_LIBRARIES} seriallib)
+
+add_executable(xbee_send_uam src/serial.c src/xbee_send_uam.cpp)
+target_link_libraries(xbee_send_uam ${catkin_LIBRARIES} seriallib)
+
+add_executable(xbee_receive_uam src/serial.c src/xbee_receive_uam.cpp)
+target_link_libraries(xbee_receive_uam ${catkin_LIBRARIES} seriallib)
