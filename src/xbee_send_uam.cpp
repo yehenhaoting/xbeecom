@@ -12,18 +12,20 @@ void pose_callback(geometry_msgs::PoseStamped msg)
 {
     short data[14];
     int secs[2];
-    data[0]=(short)(msg.pose.position.x*10000);
-    data[1]=(short)(msg.pose.position.y*10000);
-    data[2]=(short)(msg.pose.position.z*10000);
-    data[3]=(short)(msg.pose.orientation.x*10000);
-    data[4]=(short)(msg.pose.orientation.y*10000);
-    data[5]=(short)(msg.pose.orientation.z*10000);
-    data[6]=(short)(msg.pose.orientation.w*10000);
-    data[7]=(short)(-1*10000);
-    data[8]=(short)(-1*10000);
-    data[9]=(short)(-1*10000);
-    secs[0]=msg.header.stamp.sec;
-    secs[1]=msg.header.stamp.nsec;
+    data[0]=(short)(msg.pose.position.x*1000);
+    data[1]=(short)(msg.pose.position.y*1000);
+    data[2]=(short)(msg.pose.position.z*1000);
+    data[3]=(short)(msg.pose.orientation.x*1000);
+    data[4]=(short)(msg.pose.orientation.y*1000);
+    data[5]=(short)(msg.pose.orientation.z*1000);
+    data[6]=(short)(msg.pose.orientation.w*1000);
+    data[7]=(short)(-1*1000);
+    data[8]=(short)(-1*1000);
+    data[9]=(short)(-1*1000);
+//    secs[0]=msg.header.stamp.sec;
+//    secs[1]=msg.header.stamp.nsec;
+    secs[0]=-1;
+    secs[1]=-1;
     std::cout<<secs[0]<<"-"<<secs[1]<<"\tx:"<<msg.pose.position.x<<"\ty:"<<msg.pose.position.y<<"\tz:"<<msg.pose.position.z<<std::endl;
     memcpy(&data[10],secs,sizeof(secs));
 

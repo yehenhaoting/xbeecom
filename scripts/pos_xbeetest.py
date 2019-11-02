@@ -10,7 +10,7 @@ POS_REF = PoseStamped()
 def pos_talker():
     pub = rospy.Publisher('/mocap/pose', PoseStamped, queue_size=10)
     rospy.init_node('mocap_pose', anonymous=True)
-    rate = rospy.Rate(20) # 20hz
+    rate = rospy.Rate(10) # 20hz
 
     # while not rospy.is_shutdown():
     #     POS_REF.pose.position.x = 0

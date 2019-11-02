@@ -46,13 +46,13 @@ int main(int argc, char **argv) {
 		}
 		memcpy(secs,&data_out[10],sizeof(secs));
 
-		base_pose.pose.position.x = (float)data_out[0]/10000;
-		base_pose.pose.position.y = (float)data_out[1]/10000;
-		base_pose.pose.position.z = (float)data_out[2]/10000;
-		base_pose.pose.orientation.x = (float)data_out[3]/10000;
-		base_pose.pose.orientation.y = (float)data_out[4]/10000;
-		base_pose.pose.orientation.z = (float)data_out[5]/10000;
-		base_pose.pose.orientation.w = (float)data_out[6]/10000;
+		base_pose.pose.position.x = (float)data_out[0]/1000;
+		base_pose.pose.position.y = (float)data_out[1]/1000;
+		base_pose.pose.position.z = (float)data_out[2]/1000;
+		base_pose.pose.orientation.x = (float)data_out[3]/1000;
+		base_pose.pose.orientation.y = (float)data_out[4]/1000;
+		base_pose.pose.orientation.z = (float)data_out[5]/1000;
+		base_pose.pose.orientation.w = (float)data_out[6]/1000;
 
         ROS_INFO_STREAM(base_pose.pose);
         uam_base_pub.publish(base_pose);
